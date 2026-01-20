@@ -51,7 +51,10 @@ exports.submitSolution = async (req, res) => {
  */
 exports.getLeaderboard = async (req, res) => {
   try {
-    const leaderboard = await Submission.find({ marks: { $ne: null } })
+    const leaderboard = await Submission.find({
+      marks: { $ne: null },
+      published: true
+    })
       .populate("teamId", "teamId")
       .populate("problemId", "title")
       .sort({ marks: -1, updatedAt: 1 });
@@ -61,6 +64,7 @@ exports.getLeaderboard = async (req, res) => {
     res.status(500).json({ message: "Failed to load leaderboard" });
   }
 };
+
 
 /**
  * Check if team has already submitted

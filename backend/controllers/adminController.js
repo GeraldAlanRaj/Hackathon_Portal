@@ -1,50 +1,6 @@
 const Problem = require("../models/ProblemStatement");
 const User = require("../models/User");
 const Submission = require("../models/Submission");
-const HackathonConfig = require("../models/HackathonConfig");
-
-/**
- * SET or UPDATE hackathon window
- */
-exports.setHackathonWindow = async (req, res) => {
-  const { startTime, endTime } = req.body;
-
-  if (!startTime || !endTime) {
-    return res.status(400).json({ message: "Start and end time required" });
-  }
-
-  try {
-    let config = await HackathonConfig.findOne();
-
-    if (config) {
-      config.startTime = startTime;
-      config.endTime = endTime;
-      await config.save();
-    } else {
-      config = await HackathonConfig.create({ startTime, endTime });
-    }
-
-    res.json({
-      message: "Hackathon window configured successfully",
-      config
-    });
-  } catch (error) {
-    res.status(500).json({ message: "Failed to configure hackathon" });
-  }
-};
-
-/**
- * GET hackathon window
- */
-exports.getHackathonWindow = async (req, res) => {
-  try {
-    const config = await HackathonConfig.findOne();
-    res.json(config);
-  } catch (error) {
-    res.status(500).json({ message: "Failed to fetch hackathon config" });
-  }
-};
-
 
 /**
  * 1️⃣ Create Problem Statement
@@ -83,9 +39,11 @@ exports.getAllSubmissions = async (req, res) => {
 
     res.json(submissions);
   } catch (error) {
+    console.error("❌ FETCH SUBMISSIONS ERROR:", error); // 🔥 ADD THIS
     res.status(500).json({ message: "Failed to fetch submissions" });
   }
 };
+
 
 /**
  * 4️⃣ Grade Submission
@@ -120,5 +78,21 @@ exports.getLeaderboard = async (req, res) => {
     res.json(leaderboard);
   } catch (error) {
     res.status(500).json({ message: "Failed to load leaderboard" });
+  }
+};
+
+/**
+ * 6️⃣ Publish leaderboard
+ */
+exports.publishLeaderboard = async (req, res) => {
+  try {
+    await Submission.updateMany(
+      { marks: { $ne: null } },
+      { $set: { published: true } }
+    );
+
+    res.json({ message: "Leaderboard published successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to publish leaderboard" });
   }
 };

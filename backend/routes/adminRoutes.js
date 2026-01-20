@@ -7,7 +7,8 @@ const {
   getAllTeams,
   getAllSubmissions,
   gradeSubmission,
-  getLeaderboard
+  getLeaderboard,
+  publishLeaderboard
 } = require("../controllers/adminController");
 
 
@@ -34,6 +35,8 @@ router.put("/submissions/:submissionId/grade", gradeSubmission);
 
 // 5️⃣ Leaderboard
 router.get("/leaderboard", getLeaderboard);
+router.post("/leaderboard/publish", publishLeaderboard);
+
 
 
 router.post("/hackathon", setHackathonWindow);

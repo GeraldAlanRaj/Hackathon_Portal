@@ -4,6 +4,7 @@ import "../../styles/AdminTeams.css";
 
 const AdminTeams = () => {
   const [teams, setTeams] = useState([]);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     fetchTeams();
@@ -43,7 +44,12 @@ const AdminTeams = () => {
     URL.revokeObjectURL(url);
   };
 
-  /* ✅ EMPTY STATE */
+  /* ===== SEARCH FILTER ===== */
+  const filteredTeams = teams.filter((team) =>
+    team.teamId.toLowerCase().includes(search.toLowerCase())
+  );
+
+  /* EMPTY STATE */
   if (teams.length === 0) {
     return (
       <div className="admin-teams-empty">
@@ -54,31 +60,48 @@ const AdminTeams = () => {
 
   return (
     <div className="admin-teams-page">
+      {/* HEADER */}
       <div className="page-header">
         <h1 className="page-title">Registered Teams</h1>
+
         <button className="export-btn" onClick={exportCSV}>
           Export CSV
         </button>
+
+        {/* SEARCH BAR */}
+        <div className="search-wrapper">
+          <input
+            type="text"
+            placeholder="Search by Team Name..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
       </div>
 
+      {/* GRID */}
       <div className="teams-grid">
-        {teams.map((team) => (
-          <div key={team._id} className="team-card">
-            <div className="team-header">
-              <span className="team-id">{team.teamId}</span>
-            </div>
+        {filteredTeams.length === 0 ? (
+          <p className="no-results">No matching teams found</p>
+        ) : (
+          filteredTeams.map((team) => (
+            <div key={team._id} className="team-card">
+              <div className="team-header">
+                <span className="team-id">{team.teamId}</span>
+              </div>
 
-            <div className="members-table">
-              {team.members.map((m, i) => (
-                <div key={i} className="member-row">
-                  <span className="name">{m.name}</span>
-                  <span>{m.regNo}</span>
-                  <span>{m.email}</span>
-                </div>
-              ))}
+              <div className="members-table">
+                {team.members.map((m, i) => (
+                  <div key={i} className="member-row">
+                    <span className="name">{m.name}</span>
+                    <span>{m.regNo}</span>
+                    <span>{m.email}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );

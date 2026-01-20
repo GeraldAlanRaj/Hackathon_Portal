@@ -22,12 +22,14 @@ const SubmissionSchema = new mongoose.Schema(
     marks: {
       type: Number,
       default: null
+    },
+
+    published: {
+      type: Boolean,
+      default: false
     }
   },
   { timestamps: true }
 );
-
-// One submission per team
-SubmissionSchema.index({ teamId: 1 }, { unique: true });
 
 module.exports = mongoose.model("Submission", SubmissionSchema);
