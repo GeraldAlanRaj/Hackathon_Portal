@@ -12,13 +12,52 @@ const Navbar = ({ role, setLoggedIn, setRole }) => {
     navigate("/auth");
   };
 
+  const handleScroll = (sectionId) => {
+  navigate("/home");
+
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        section.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      }
+    }, 100);
+  });
+};
+
+
   return (
     <nav className="navbar">
       {/* LEFT MENU */}
       <div className="navbar-left">
         {role === "team" && (
           <>
-            <Link to="/home">Home</Link>
+            <button
+              className="nav-link-btn"
+              onClick={() => handleScroll("hero")}
+            >
+              Home
+            </button>
+
+
+            {/* NEW LINKS */}
+            <button
+              className="nav-link-btn"
+              onClick={() => handleScroll("about")}
+            >
+              About
+            </button>
+
+            <button
+              className="nav-link-btn"
+              onClick={() => handleScroll("rules")}
+            >
+              Rules & Regulations
+            </button>
+
             <Link to="/problems">Problems</Link>
             <Link to="/leaderboard">Leaderboard</Link>
           </>

@@ -54,6 +54,20 @@ const Authentication = ({ setLoggedIn, setRole }) => {
   return (
     <div className="auth-page">
       <div className="auth-card">
+
+        {/* 🔥 TITLE */}
+        <h1 className="auth-title">
+          One-Day Mathematical Modelling Hackathon
+        </h1>
+
+        {/* 🔥 LOGOS */}
+        <div className="auth-logos">
+          <img src="/srm.png" alt="SRM" />
+          <img src="/soc.jpeg" alt="SOC" />
+          <img src="/dsbs.png" alt="DSBS" />
+        </div>
+
+        {/* TOGGLE */}
         <div className="auth-toggle">
           <button
             className={mode === "login" ? "active" : ""}

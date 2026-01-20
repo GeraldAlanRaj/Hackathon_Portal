@@ -26,7 +26,7 @@ const Leaderboard = () => {
         {leaderboard.length === 0 ? (
           /* EMPTY STATE */
           <div className="leaderboard-empty">
-            <h3>⏳ Solutions are yet to be evaluated</h3>
+            <h3>Solutions are yet to be evaluated</h3>
             <p>Please check back later for the updated rankings.</p>
           </div>
         ) : (
