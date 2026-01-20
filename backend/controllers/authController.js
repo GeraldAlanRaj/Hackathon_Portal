@@ -18,7 +18,7 @@ exports.signup = async (req, res) => {
 
     const existingTeam = await User.findOne({ teamId });
     if (existingTeam) {
-      return res.status(400).json({ message: "Team ID already exists" });
+      return res.status(400).json({ message: "Team Name already exists, Choose a different name" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
