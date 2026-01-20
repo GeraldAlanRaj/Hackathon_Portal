@@ -1,0 +1,30 @@
+/* ===== GLOBAL RESET ===== */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+/* ===== GLOBAL APP BACKGROUND ===== */
+body {
+  min-height: 100vh;
+
+  /* navbar offset (90px height) */
+  padding-top: 90px;
+
+  background: radial-gradient(
+      circle at top,
+      rgba(102, 126, 234, 0.15),
+      transparent 60%
+    ),
+    linear-gradient(135deg, #1e1e2f, #252540);
+
+  color: #ffffff;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}

@@ -1,0 +1,152 @@
+/* PAGE */
+.admin-teams-page {
+  padding: 40px 30px;
+  max-width: 1400px; /* 🔥 allow 4 cards */
+  margin: auto;
+}
+
+/* HEADER */
+.page-header {
+  position: relative;
+  margin-bottom: 60px;
+}
+
+/* CENTERED TITLE */
+.page-title {
+  text-align: center;
+  font-size: 26px;
+  font-weight: 600;
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+}
+
+/* EXPORT BUTTON — TOP RIGHT */
+.export-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+
+  padding: 9px 18px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border: none;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.export-btn:hover {
+  transform: translateY(-50%) translateY(-2px);
+  box-shadow: 0 0 14px rgba(102, 126, 234, 0.6);
+}
+
+
+/* GRID — 3 PER ROW */
+.teams-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+
+/* TEAM CARD */
+.team-card {
+  background: linear-gradient(
+    180deg,
+    rgba(36, 36, 64, 0.95),
+    rgba(28, 28, 48, 0.95)
+  );
+
+  border-radius: 14px;
+  border: 1px solid rgba(102, 126, 234, 0.35);
+
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.team-card:hover {
+  transform: translateY(-6px);
+  box-shadow:
+    0 0 22px rgba(102, 126, 234, 0.45),
+    inset 0 0 10px rgba(102, 126, 234, 0.15);
+}
+
+/* TEAM HEADER */
+.team-header {
+  padding: 14px 18px;
+  background: linear-gradient(
+    135deg,
+    rgba(102, 126, 234, 0.25),
+    rgba(118, 75, 162, 0.25)
+  );
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.team-id {
+  font-weight: 600;
+  font-size: 15px;
+  color: #ffd700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+}
+
+/* MEMBERS TABLE */
+.members-table {
+  display: flex;
+  flex-direction: column;
+}
+
+/* MEMBER ROW */
+.member-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1.6fr;
+  gap: 10px;
+  padding: 12px 16px;
+
+  font-size: 13.5px;
+  color: #e0e0e0;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  transition: background 0.2s ease;
+}
+
+.member-row:last-child {
+  border-bottom: none;
+}
+
+.member-row:hover {
+  background: rgba(102, 126, 234, 0.15);
+}
+
+/* NAME */
+.member-row .name {
+  font-weight: 500;
+  color: #ffffff;
+}
+
+/* RESPONSIVE BREAKPOINTS */
+@media (max-width: 1200px) {
+  .teams-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .teams-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .teams-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .member-row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+}

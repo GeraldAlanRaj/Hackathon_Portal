@@ -1,0 +1,155 @@
+/* PAGE */
+.admin-submissions-page {
+  padding: 40px 30px;
+  max-width: 1400px;
+  margin: auto;
+}
+
+/* TITLE */
+.page-title {
+  text-align: center;
+  font-size: 26px;
+  margin-bottom: 60px;
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+}
+
+/* GRID */
+.submissions-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 26px;
+}
+
+/* ================= CARD BASE ================= */
+.submission-card {
+  background: linear-gradient(
+    180deg,
+    rgba(36, 36, 64, 0.95),
+    rgba(28, 28, 48, 0.95)
+  );
+  border-radius: 16px;
+  padding: 22px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* ================= UNGRADED (RED) ================= */
+.submission-card:not(.graded) {
+  border: 1px solid rgba(244, 67, 54, 0.55);
+  box-shadow:
+    0 0 18px rgba(244, 67, 54, 0.35),
+    inset 0 0 8px rgba(244, 67, 54, 0.15);
+}
+
+.submission-card:not(.graded):hover {
+  transform: translateY(-6px);
+  box-shadow:
+    0 0 32px rgba(244, 67, 54, 0.65),
+    inset 0 0 12px rgba(244, 67, 54, 0.25);
+}
+
+/* ================= GRADED (GREEN) ================= */
+.submission-card.graded {
+  border: 1px solid rgba(76, 175, 80, 0.55);
+  box-shadow:
+    0 0 18px rgba(76, 175, 80, 0.35),
+    inset 0 0 8px rgba(76, 175, 80, 0.2);
+}
+
+.submission-card.graded:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 0 26px rgba(76, 175, 80, 0.6),
+    inset 0 0 10px rgba(76, 175, 80, 0.3);
+}
+
+/* ================= HEADER ================= */
+.submission-header {
+  margin-bottom: 14px;
+}
+
+.submission-header .team {
+  display: block;
+  font-weight: 700;
+  font-size: 18px;
+  color: #ffd700;
+  margin-bottom: 6px;
+  letter-spacing: 0.4px;
+  text-shadow: 0 0 12px rgba(255, 215, 0, 0.85);
+}
+
+.submission-header .problem {
+  font-size: 15.5px;
+  font-weight: 500;
+  color: #f0f0f0;
+  opacity: 0.9;
+}
+
+/* ================= LINK ================= */
+.solution-link {
+  display: inline-block;
+  margin: 14px 0;
+  font-size: 15.5px;
+  font-weight: 600;
+  color: #8fa8ff;
+  text-decoration: none;
+  letter-spacing: 0.3px;
+}
+
+.solution-link:hover {
+  text-shadow: 0 0 8px rgba(138, 160, 255, 0.7);
+}
+
+/* ================= GRADE ================= */
+.grade-section {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 14px;
+}
+
+.grade-section input {
+  width: 80px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+
+/* BUTTON */
+.grade-section button {
+  padding: 7px 14px;
+  border: none;
+  border-radius: 6px;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 13px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Button color based on state */
+.submission-card:not(.graded) .grade-section button {
+  background: linear-gradient(135deg, #e53935, #b71c1c);
+}
+
+.submission-card.graded .grade-section button {
+  background: linear-gradient(135deg, #43a047, #2e7d32);
+}
+
+.grade-section button:hover {
+  transform: translateY(-1px);
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 1100px) {
+  .submissions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 650px) {
+  .submissions-grid {
+    grid-template-columns: 1fr;
+  }
+}
