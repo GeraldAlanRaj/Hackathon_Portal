@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-import Authentication from "./pages/AuthenticaTion";
+import Authentication from "./pages/Authentication";
 import Home from "./pages/user/Home";
 import Problems from "./pages/user/Problems";
 import Leaderboard from "./pages/user/Leaderboard";
