@@ -72,7 +72,7 @@ const Authentication = ({ setLoggedIn, setRole }) => {
         {mode === "login" && (
           <form className="auth-form fade" onSubmit={handleLogin}>
             <input
-              placeholder="Team ID / Admin ID"
+              placeholder="Team Name"
               value={teamId}
               onChange={(e) => setTeamId(e.target.value)}
               required
@@ -91,7 +91,7 @@ const Authentication = ({ setLoggedIn, setRole }) => {
         {mode === "register" && (
           <form className="auth-form fade" onSubmit={handleRegister}>
             <input
-              placeholder="Team ID"
+              placeholder="Team Name"
               value={teamId}
               onChange={(e) => setTeamId(e.target.value)}
               required
