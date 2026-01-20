@@ -150,3 +150,19 @@
     gap: 4px;
   }
 }
+
+/* ================= EMPTY STATE ================= */
+.admin-teams-empty {
+  min-height: calc(100vh - 90px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-text {
+  font-size: 22px;
+  font-weight: 500;
+  color: #ffffff;
+  opacity: 0.85;
+  text-shadow: 0 0 12px rgba(102, 126, 234, 0.6);
+}

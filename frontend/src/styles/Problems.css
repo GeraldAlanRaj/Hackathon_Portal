@@ -12,6 +12,12 @@
   animation: pulse 1.5s infinite;
 }
 
+/* 🔴 LAST 1 HOUR */
+.problem-timer.danger {
+  color: #ff4d4d;
+  text-shadow: 0 0 16px rgba(255, 77, 77, 0.9);
+}
+
 /* TITLE */
 .page-title {
   text-align: center;
@@ -31,20 +37,14 @@
 .problem-card {
   background: rgba(255, 255, 255, 0.08);
   border-radius: 18px;
-
-  /* 🔥 MORE SQUARE-ISH */
   padding: 20px;
   aspect-ratio: 1.75 / 1;
-
   cursor: pointer;
   text-align: center;
-
-  /* CENTER CONTENT */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
   border: 1px solid rgba(102, 126, 234, 0.4);
   box-shadow: 0 0 20px rgba(102, 126, 234, 0.25);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -71,7 +71,6 @@
   text-decoration: none;
   font-size: 14px;
 }
-
 
 /* LOCKED */
 .locked-card {

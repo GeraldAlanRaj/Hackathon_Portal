@@ -20,9 +20,7 @@ const AdminTeams = () => {
 
   /* ===== CSV EXPORT ===== */
   const exportCSV = () => {
-    const rows = [
-      ["Team ID", "Member Name", "Register No", "Email"]
-    ];
+    const rows = [["Team ID", "Member Name", "Register No", "Email"]];
 
     teams.forEach((team) => {
       team.members.forEach((m) => {
@@ -45,15 +43,23 @@ const AdminTeams = () => {
     URL.revokeObjectURL(url);
   };
 
+  /* ✅ EMPTY STATE */
+  if (teams.length === 0) {
+    return (
+      <div className="admin-teams-empty">
+        <h3 className="empty-text">No registrations yet</h3>
+      </div>
+    );
+  }
+
   return (
     <div className="admin-teams-page">
       <div className="page-header">
-  <h1 className="page-title">Registered Teams</h1>
-  <button className="export-btn" onClick={exportCSV}>
-    Export CSV
-  </button>
-</div>
-
+        <h1 className="page-title">Registered Teams</h1>
+        <button className="export-btn" onClick={exportCSV}>
+          Export CSV
+        </button>
+      </div>
 
       <div className="teams-grid">
         {teams.map((team) => (

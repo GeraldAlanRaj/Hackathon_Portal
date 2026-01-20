@@ -9,6 +9,8 @@ const Problems = () => {
 
   const [hackathonStatus, setHackathonStatus] = useState("");
   const [timeLeft, setTimeLeft] = useState("");
+  const [isLastHour, setIsLastHour] = useState(false);
+  const [hackathonStartTime, setHackathonStartTime] = useState("");
 
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [submittedProblem, setSubmittedProblem] = useState(null);
@@ -65,15 +67,23 @@ const Problems = () => {
       const start = new Date(res.data.startTime).getTime();
       const end = new Date(res.data.endTime).getTime();
 
+      setHackathonStartTime(
+        new Date(res.data.startTime).toLocaleString()
+      );
+
       if (now < start) {
         setHackathonStatus("NOT_STARTED");
         setTimeLeft(formatTime(start - now));
+        setIsLastHour(false);
       } else if (now > end) {
         setHackathonStatus("ENDED");
         setTimeLeft("");
+        setIsLastHour(false);
       } else {
+        const remaining = end - now;
         setHackathonStatus("RUNNING");
-        setTimeLeft(formatTime(end - now));
+        setTimeLeft(formatTime(remaining));
+        setIsLastHour(remaining <= 60 * 60 * 1000);
       }
     } catch {
       setHackathonStatus("ERROR");
@@ -113,17 +123,21 @@ const Problems = () => {
 
   return (
     <div className="problems-page">
-      {/* ⏳ GOLDEN TIMER */}
+      {/* ⏳ TIMER */}
       {hackathonStatus === "RUNNING" && (
-        <div className="problem-timer">
+        <div className={`problem-timer ${isLastHour ? "danger" : ""}`}>
           ⏳ Time Remaining: <span>{timeLeft}</span>
         </div>
       )}
-      <br></br>
-      {/* TITLE */}
-      <h1 className="page-title">Problem Statements</h1>
 
-      {/* 🔒 LOCKED STATE */}
+      <br />
+
+      {/* TITLE – ONLY DURING HACKATHON & BEFORE SUBMISSION */}
+      {!hasSubmitted && hackathonStatus === "RUNNING" && (
+        <h1 className="page-title">Problem Statements</h1>
+      )}
+
+      {/* ✅ SUBMITTED */}
       {hasSubmitted && (
         <div className="locked-card">
           <h3>✅ Submission Completed</h3>
@@ -135,24 +149,51 @@ const Problems = () => {
         </div>
       )}
 
-      {/* 🔓 PROBLEMS GRID */}
-      {!hasSubmitted && (
-        <div className="problems-grid">
-          {problems.map((p) => (
-            <div
-              key={p._id}
-              className={`problem-card ${
-                selectedProblem?._id === p._id ? "selected" : ""
-              }`}
-              onClick={() => handleCardClick(p)}
-            >
-              <h3>{p.title}</h3>
-              <a href={p.driveLink} target="_blank" rel="noreferrer">
-                View Details
-              </a>
-            </div>
-          ))}
+      {/* ⏳ BEFORE HACKATHON */}
+      {!hasSubmitted && hackathonStatus === "NOT_STARTED" && (
+        <div className="locked-card">
+          <h3>🚧 Hackathon Not Started</h3>
+          <p>
+            Problem statements will be available from:
+            <strong> {hackathonStartTime}</strong>
+          </p>
         </div>
+      )}
+
+      {/* 🔴 AFTER HACKATHON (NO SUBMISSION) */}
+      {!hasSubmitted && hackathonStatus === "ENDED" && (
+        <div className="locked-card">
+          <h3>⛔ Hackathon Completed</h3>
+          <p>The hackathon has ended.</p>
+          <p>Submissions are no longer accepted.</p>
+        </div>
+      )}
+
+      {/* 🟢 DURING HACKATHON */}
+      {!hasSubmitted && hackathonStatus === "RUNNING" && (
+        problems.length === 0 ? (
+          <div className="locked-card">
+            <h3>⚠️ No Problems Available</h3>
+            <p>Please wait while problem statements are being published.</p>
+          </div>
+        ) : (
+          <div className="problems-grid">
+            {problems.map((p) => (
+              <div
+                key={p._id}
+                className={`problem-card ${
+                  selectedProblem?._id === p._id ? "selected" : ""
+                }`}
+                onClick={() => handleCardClick(p)}
+              >
+                <h3>{p.title}</h3>
+                <a href={p.driveLink} target="_blank" rel="noreferrer">
+                  View Details
+                </a>
+              </div>
+            ))}
+          </div>
+        )
       )}
 
       {/* CONFIRM MODAL */}

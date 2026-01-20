@@ -45,7 +45,11 @@ const AdminSubmissions = () => {
   };
 
   if (submissions.length === 0) {
-    return <h3 className="empty-text">No submissions yet</h3>;
+    return (
+      <div className="admin-empty-wrapper">
+        <h3 className="empty-text">No submissions yet</h3>
+      </div>
+    );
   }
 
   return (
@@ -54,10 +58,10 @@ const AdminSubmissions = () => {
 
       <div className="submissions-grid">
         {submissions.map((s) => (
-        <div
-          key={s._id}
-          className={`submission-card ${s.marks !== null ? "graded" : ""}`}
-        >
+          <div
+            key={s._id}
+            className={`submission-card ${s.marks !== null ? "graded" : ""}`}
+          >
             <div className="submission-header">
               <span className="team">{s.teamId.teamId}</span>
               <span className="problem">{s.problemId.title}</span>
