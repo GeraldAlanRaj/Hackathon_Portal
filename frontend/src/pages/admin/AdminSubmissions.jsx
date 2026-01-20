@@ -5,6 +5,7 @@ import "../../styles/AdminSubmissions.css";
 const AdminSubmissions = () => {
   const [submissions, setSubmissions] = useState([]);
   const [marks, setMarks] = useState({});
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     fetchSubmissions();
@@ -44,6 +45,13 @@ const AdminSubmissions = () => {
     }
   };
 
+  /* 🔍 FILTER LOGIC */
+  const filteredSubmissions = submissions.filter((s) =>
+    `${s.teamId.teamId} ${s.problemId.title}`
+      .toLowerCase()
+      .includes(search.toLowerCase())
+  );
+
   if (submissions.length === 0) {
     return (
       <div className="admin-empty-wrapper">
@@ -56,44 +64,62 @@ const AdminSubmissions = () => {
     <div className="admin-submissions-page">
       <h1 className="page-title">Submissions</h1>
 
+      {/* 🔍 SEARCH BAR */}
+      <div className="search-wrapper">
+        <input
+          type="text"
+          placeholder="Search by Team or Problem..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
+
       <div className="submissions-grid">
-        {submissions.map((s) => (
-          <div
-            key={s._id}
-            className={`submission-card ${s.marks !== null ? "graded" : ""}`}
-          >
-            <div className="submission-header">
-              <span className="team">{s.teamId.teamId}</span>
-              <span className="problem">{s.problemId.title}</span>
-            </div>
-
-            <a
-              href={s.solutionLink}
-              target="_blank"
-              rel="noreferrer"
-              className="solution-link"
-            >
-              View Solution
-            </a>
-
-            <div className="grade-section">
-              <input
-                type="number"
-                min="0"
-                max="100"
-                placeholder="Marks"
-                value={marks[s._id] ?? ""}
-                onChange={(e) =>
-                  setMarks({ ...marks, [s._id]: e.target.value })
-                }
-              />
-
-              <button onClick={() => handleGrade(s._id)}>
-                {s.marks !== null ? "Update Marks" : "Submit Marks"}
-              </button>
-            </div>
+        {filteredSubmissions.length === 0 ? (
+          <div className="no-results">
+            No matching submissions found
           </div>
-        ))}
+        ) : (
+          filteredSubmissions.map((s) => (
+            <div
+              key={s._id}
+              className={`submission-card ${
+                s.marks !== null ? "graded" : ""
+              }`}
+            >
+              <div className="submission-header">
+                <span className="team">{s.teamId.teamId}</span>
+                <span className="problem">{s.problemId.title}</span>
+              </div>
+
+              <a
+                href={s.solutionLink}
+                target="_blank"
+                rel="noreferrer"
+                className="solution-link"
+              >
+                View Solution
+              </a>
+
+              <div className="grade-section">
+                <input
+                  type="number"
+                  min="0"
+                  max="100"
+                  placeholder="Marks"
+                  value={marks[s._id] ?? ""}
+                  onChange={(e) =>
+                    setMarks({ ...marks, [s._id]: e.target.value })
+                  }
+                />
+
+                <button onClick={() => handleGrade(s._id)}>
+                  {s.marks !== null ? "Update Marks" : "Submit Marks"}
+                </button>
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
