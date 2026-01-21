@@ -14,6 +14,9 @@ const evaluatorRoutes = require("./routes/evaluatorRoutes");
 
 const app = express();
 
+// TRUST RENDER PROXY (IMPORTANT)
+app.set("trust proxy", 1);
+
 // Body parsing
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -23,7 +26,7 @@ app.use(helmet());
 app.use(compression());
 app.use(generalLimiter);
 
-// CORS (NO trailing slash)
+// CORS
 app.use(cors({
   origin: process.env.CLIENT_URL,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
