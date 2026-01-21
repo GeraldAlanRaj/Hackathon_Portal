@@ -87,76 +87,85 @@ const AdminSubmissions = () => {
       .includes(search.toLowerCase())
   );
 
-  return (
-    <div className="admin-submissions-page">
-      <h1 className="page-title">Submissions</h1>
-
-      <div className="search-wrapper">
-        <input
-          placeholder="Search by Team or Problem..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+return (
+  <div className="admin-submissions-page">
+    {submissions.length === 0 ? (
+      <div className="no-submissions-empty">
+        <h3 className="no-submissions">No submissions yet</h3>
       </div>
+    ) : (
+      <>
+        <h1 className="page-title">Submissions</h1>
 
-      <div className="submissions-grid">
-        {filtered.map((s) => {
-          const m = marks[s._id] || {};
-          const total = SECTIONS.reduce(
-            (sum, sec) => sum + (m[sec.key] || 0),
-            0
-          );
+        <div className="search-wrapper">
+          <input
+            placeholder="Search by Team or Problem..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
 
-          return (
-            <div key={s._id} className="submission-card graded">
-              <div className="submission-header">
-                <span className="team">{s.teamId.teamId}</span>
-                <span className="problem">{s.problemId.title}</span>
+        <div className="submissions-grid">
+          {filtered.map((s) => {
+            const m = marks[s._id] || {};
+            const total = SECTIONS.reduce(
+              (sum, sec) => sum + (m[sec.key] || 0),
+              0
+            );
+
+            return (
+              <div key={s._id} className="submission-card graded">
+                <div className="submission-header">
+                  <span className="team">{s.teamId.teamId}</span>
+                  <span className="problem">{s.problemId.title}</span>
+                </div>
+
+                <a
+                  href={s.solutionLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="solution-link"
+                >
+                  View Solution
+                </a>
+
+                <div className="evaluation-grid">
+                  {SECTIONS.map((sec) => (
+                    <div key={sec.key} className="evaluation-field">
+                      <label>{sec.label}</label>
+                      <input
+                        type="number"
+                        min="0"
+                        max="10"
+                        value={m[sec.key] ?? ""}
+                        onChange={(e) =>
+                          updateMark(s._id, sec.key, e.target.value)
+                        }
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                <div className="total-row">
+                  <span>Total</span>
+                  <strong>{total} / 50</strong>
+                </div>
+
+                <button
+                  className="submit-eval-btn"
+                  onClick={() => handleGrade(s._id)}
+                >
+                  Save Evaluation
+                </button>
               </div>
+            );
+          })}
+        </div>
+      </>
+    )}
+  </div>
+);
 
-              <a
-                href={s.solutionLink}
-                target="_blank"
-                rel="noreferrer"
-                className="solution-link"
-              >
-                View Solution
-              </a>
-
-              <div className="evaluation-grid">
-                {SECTIONS.map((sec) => (
-                  <div key={sec.key} className="evaluation-field">
-                    <label>{sec.label}</label>
-                    <input
-                      type="number"
-                      min="0"
-                      max="10"
-                      value={m[sec.key] ?? ""}
-                      onChange={(e) =>
-                        updateMark(s._id, sec.key, e.target.value)
-                      }
-                    />
-                  </div>
-                ))}
-              </div>
-
-              <div className="total-row">
-                <span>Total</span>
-                <strong>{total} / 50</strong>
-              </div>
-
-              <button
-                className="submit-eval-btn"
-                onClick={() => handleGrade(s._id)}
-              >
-                Save Evaluation
-              </button>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
 };
 
 export default AdminSubmissions;

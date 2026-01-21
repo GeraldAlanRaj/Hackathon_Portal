@@ -73,7 +73,7 @@ const Home = () => {
             <div className="rule-card">
               <h3>Problem Access & Time Allocation</h3>
               <ul>
-                <li>Six modelling problems released at the start.</li>
+                <li>Three modelling problems released at the start.</li>
                 <li>Exactly one problem must be selected.</li>
                 <li>The solution can be submitted only once within the given time window.</li>
               </ul>
