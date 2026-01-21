@@ -1,6 +1,7 @@
 const Problem = require("../models/ProblemStatement");
 const User = require("../models/User");
 const Submission = require("../models/Submission");
+const Evaluation = require("../models/Evaluation");
 
 /**
  * 1️⃣ Create Problem Statement
@@ -28,58 +29,62 @@ exports.getAllTeams = async (req, res) => {
   }
 };
 
-/**
- * 3️⃣ View All Submissions
- */
-exports.getAllSubmissions = async (req, res) => {
-  try {
-    const submissions = await Submission.find()
-      .populate("teamId", "teamId members")
-      .populate("problemId", "title");
 
-    res.json(submissions);
-  } catch (error) {
-    console.error("❌ FETCH SUBMISSIONS ERROR:", error); // 🔥 ADD THIS
-    res.status(500).json({ message: "Failed to fetch submissions" });
-  }
-};
-
-
-/**
- * 4️⃣ Grade Submission
- */
-exports.gradeSubmission = async (req, res) => {
-  const { submissionId } = req.params;
-  const { marks } = req.body;
-
-  try {
-    const submission = await Submission.findByIdAndUpdate(
-      submissionId,
-      { marks },
-      { new: true }
-    );
-
-    res.json(submission);
-  } catch (error) {
-    res.status(500).json({ message: "Failed to grade submission" });
-  }
-};
-
-/**
- * 5️⃣ Leaderboard
- */
 exports.getLeaderboard = async (req, res) => {
   try {
-    const leaderboard = await Submission.find({ marks: { $ne: null } })
-      .populate("teamId", "teamId")
-      .populate("problemId", "title")
-      .sort({ marks: -1, updatedAt: 1 });
+    const leaderboard = await Evaluation.aggregate([
+      {
+        $group: {
+          _id: "$submissionId",
+          totalMarks: { $sum: "$total" }
+        }
+      },
+      { $sort: { totalMarks: -1 } },
+      {
+        $lookup: {
+          from: "submissions",
+          localField: "_id",
+          foreignField: "_id",
+          as: "submission"
+        }
+      },
+      { $unwind: "$submission" },
+      {
+        $lookup: {
+          from: "users",
+          localField: "submission.teamId",
+          foreignField: "_id",
+          as: "team"
+        }
+      },
+      { $unwind: "$team" },
+      {
+        $lookup: {
+          from: "problemstatements",
+          localField: "submission.problemId",
+          foreignField: "_id",
+          as: "problem"
+        }
+      },
+      { $unwind: "$problem" },
+      {
+        $project: {
+          submissionId: "$_id",
+          totalMarks: 1,
+          teamId: "$team.teamId",
+          problemTitle: "$problem.title"
+        }
+      }
+    ]);
 
     res.json(leaderboard);
-  } catch (error) {
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Failed to load leaderboard" });
   }
 };
+
+
 
 /**
  * 6️⃣ Publish leaderboard
@@ -87,9 +92,10 @@ exports.getLeaderboard = async (req, res) => {
 exports.publishLeaderboard = async (req, res) => {
   try {
     await Submission.updateMany(
-      { marks: { $ne: null } },
-      { $set: { published: true } }
-    );
+  { _id: { $in: await Evaluation.distinct("submissionId") } },
+  { $set: { published: true } }
+);
+
 
     res.json({ message: "Leaderboard published successfully" });
   } catch (error) {

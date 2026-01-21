@@ -5,8 +5,6 @@ const adminMiddleware = require("../middleware/adminMiddleware");
 const {
   createProblem,
   getAllTeams,
-  getAllSubmissions,
-  gradeSubmission,
   getLeaderboard,
   publishLeaderboard
 } = require("../controllers/adminController");
@@ -26,12 +24,6 @@ router.post("/problems", createProblem);
 
 // 2️⃣ Teams
 router.get("/teams", getAllTeams);
-
-// 3️⃣ Submissions
-router.get("/submissions", getAllSubmissions);
-
-// 4️⃣ Grade submission
-router.put("/submissions/:submissionId/grade", gradeSubmission);
 
 // 5️⃣ Leaderboard
 router.get("/leaderboard", getLeaderboard);

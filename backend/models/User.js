@@ -2,9 +2,9 @@ const mongoose = require("mongoose");
 
 const MemberSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
-    regNo: { type: String, required: true },
-    email: { type: String, required: true }
+    name: String,
+    regNo: String,
+    email: String
   },
   { _id: false }
 );
@@ -25,19 +25,19 @@ const UserSchema = new mongoose.Schema(
 
     role: {
       type: String,
-      enum: ["admin", "team"],
+      enum: ["admin", "team", "evaluator"],
       default: "team"
     },
 
     members: {
       type: [MemberSchema],
+      default: [],
       validate: {
         validator: function (val) {
-          return this.role === "admin" || val.length === 3;
-        },
-        message: "A team must have exactly 3 members"
-      },
-      default: []
+          if (this.role === "team") return val.length === 3;
+          return true;
+        }
+      }
     }
   },
   { timestamps: true }

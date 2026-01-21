@@ -24,7 +24,7 @@ router.post(
   submitSolution
 );
 
-router.get("/hackathon", getHackathonWindow);
+router.get("/hackathon", authMiddleware, getHackathonWindow);
 
 router.get("/leaderboard", authMiddleware, getLeaderboard);
 

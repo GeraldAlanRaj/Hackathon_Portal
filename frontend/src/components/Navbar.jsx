@@ -13,26 +13,26 @@ const Navbar = ({ role, setLoggedIn, setRole }) => {
   };
 
   const handleScroll = (sectionId) => {
-  navigate("/home");
+    navigate("/home");
 
-  requestAnimationFrame(() => {
-    setTimeout(() => {
-      const section = document.getElementById(sectionId);
-      if (section) {
-        section.scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
-      }
-    }, 100);
-  });
-};
-
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        const section = document.getElementById(sectionId);
+        if (section) {
+          section.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+          });
+        }
+      }, 100);
+    });
+  };
 
   return (
     <nav className="navbar">
       {/* LEFT MENU */}
       <div className="navbar-left">
+        {/* ================= TEAM ================= */}
         {role === "team" && (
           <>
             <button
@@ -42,8 +42,6 @@ const Navbar = ({ role, setLoggedIn, setRole }) => {
               Home
             </button>
 
-
-            {/* NEW LINKS */}
             <button
               className="nav-link-btn"
               onClick={() => handleScroll("about")}
@@ -63,6 +61,36 @@ const Navbar = ({ role, setLoggedIn, setRole }) => {
           </>
         )}
 
+        {/* ================= EVALUATOR ================= */}
+        {role === "evaluator" && (
+          <>
+            <button
+              className="nav-link-btn"
+              onClick={() => handleScroll("hero")}
+            >
+              Home
+            </button>
+
+            <button
+              className="nav-link-btn"
+              onClick={() => handleScroll("about")}
+            >
+              About
+            </button>
+
+            <button
+              className="nav-link-btn"
+              onClick={() => handleScroll("rules")}
+            >
+              Rules & Regulations
+            </button>
+
+            <Link to="/admin/submissions">Submissions</Link>
+            <Link to="/leaderboard">Leaderboard</Link>
+          </>
+        )}
+
+        {/* ================= ADMIN ================= */}
         {role === "admin" && (
           <>
             <Link to="/admin/problems">Problems</Link>

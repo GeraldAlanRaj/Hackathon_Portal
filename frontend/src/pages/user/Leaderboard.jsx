@@ -45,9 +45,9 @@ const Leaderboard = () => {
               {leaderboard.map((entry, index) => (
                 <tr key={entry._id}>
                   <td>{index + 1}</td>
-                  <td>{entry.teamId.teamId}</td>
-                  <td>{entry.problemId.title}</td>
-                  <td>{entry.marks}</td>
+                  <td>{entry.teamId}</td>
+                  <td>{entry.problemTitle}</td>
+                  <td>{entry.totalMarks}</td>
                 </tr>
               ))}
             </tbody>

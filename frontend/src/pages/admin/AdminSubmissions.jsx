@@ -2,72 +2,97 @@ import { useEffect, useState } from "react";
 import axios from "../../utils/axiosInterceptor";
 import "../../styles/AdminSubmissions.css";
 
+const SECTIONS = [
+  { key: "executiveSummary", label: "Executive Summary" },
+  { key: "methodology", label: "Methodology" },
+  { key: "resultsAnalysis", label: "Results & Analysis" },
+  { key: "limitations", label: "Limitations" },
+  { key: "improvements", label: "Improvements" }
+];
+
 const AdminSubmissions = () => {
   const [submissions, setSubmissions] = useState([]);
   const [marks, setMarks] = useState({});
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    fetchSubmissions();
+    loadData();
   }, []);
 
-  const fetchSubmissions = async () => {
+  /* ================= LOAD SUBMISSIONS + EVALUATIONS ================= */
+  const loadData = async () => {
     try {
-      const res = await axios.get("/admin/submissions");
-      setSubmissions(res.data);
+      const [subRes, evalRes] = await Promise.all([
+        axios.get("/evaluator/submissions"),
+        axios.get("/evaluator/evaluations")
+      ]);
 
-      const initialMarks = {};
-      res.data.forEach((s) => {
-        if (s.marks !== null && s.marks !== undefined) {
-          initialMarks[s._id] = s.marks;
-        }
+      setSubmissions(subRes.data);
+
+      // 🔥 hydrate marks from DB
+      const hydrated = {};
+      evalRes.data.forEach((e) => {
+        hydrated[e.submissionId] = {
+          executiveSummary: e.executiveSummary,
+          methodology: e.methodology,
+          resultsAnalysis: e.resultsAnalysis,
+          limitations: e.limitations,
+          improvements: e.improvements
+        };
       });
-      setMarks(initialMarks);
+
+      setMarks(hydrated);
     } catch {
-      alert("Failed to load submissions");
+      alert("Failed to load submissions or evaluations");
     }
+  };
+
+  const updateMark = (submissionId, field, value) => {
+    const v = Math.max(0, Math.min(10, Number(value)));
+
+    setMarks((prev) => ({
+      ...prev,
+      [submissionId]: {
+        ...prev[submissionId],
+        [field]: v
+      }
+    }));
   };
 
   const handleGrade = async (submissionId) => {
-    if (marks[submissionId] === "" || marks[submissionId] === undefined) {
-      alert("Please enter marks");
+    const data = marks[submissionId];
+    if (!data) {
+      alert("Please fill all sections");
       return;
     }
 
+    for (const s of SECTIONS) {
+      if (data[s.key] === undefined) {
+        alert(`Missing marks for ${s.label}`);
+        return;
+      }
+    }
+
     try {
-      await axios.put(`/admin/submissions/${submissionId}/grade`, {
-        marks: Number(marks[submissionId])
-      });
-      alert("Marks updated successfully");
-      fetchSubmissions();
+      await axios.post(`/evaluator/submissions/${submissionId}/evaluate`, data);
+      alert("Evaluation saved");
     } catch {
-      alert("Failed to update marks");
+      alert("Failed to save evaluation");
     }
   };
 
-  /* 🔍 FILTER LOGIC */
-  const filteredSubmissions = submissions.filter((s) =>
+  const filtered = submissions.filter((s) =>
     `${s.teamId.teamId} ${s.problemId.title}`
       .toLowerCase()
       .includes(search.toLowerCase())
   );
 
-  if (submissions.length === 0) {
-    return (
-      <div className="admin-empty-wrapper">
-        <h3 className="empty-text">No submissions yet</h3>
-      </div>
-    );
-  }
-
   return (
     <div className="admin-submissions-page">
       <h1 className="page-title">Submissions</h1>
 
-      {/* 🔍 SEARCH BAR */}
       <div className="search-wrapper">
         <input
-          type="text"
           placeholder="Search by Team or Problem..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -75,18 +100,15 @@ const AdminSubmissions = () => {
       </div>
 
       <div className="submissions-grid">
-        {filteredSubmissions.length === 0 ? (
-          <div className="no-results">
-            No matching submissions found
-          </div>
-        ) : (
-          filteredSubmissions.map((s) => (
-            <div
-              key={s._id}
-              className={`submission-card ${
-                s.marks !== null ? "graded" : ""
-              }`}
-            >
+        {filtered.map((s) => {
+          const m = marks[s._id] || {};
+          const total = SECTIONS.reduce(
+            (sum, sec) => sum + (m[sec.key] || 0),
+            0
+          );
+
+          return (
+            <div key={s._id} className="submission-card graded">
               <div className="submission-header">
                 <span className="team">{s.teamId.teamId}</span>
                 <span className="problem">{s.problemId.title}</span>
@@ -101,25 +123,37 @@ const AdminSubmissions = () => {
                 View Solution
               </a>
 
-              <div className="grade-section">
-                <input
-                  type="number"
-                  min="0"
-                  max="100"
-                  placeholder="Marks"
-                  value={marks[s._id] ?? ""}
-                  onChange={(e) =>
-                    setMarks({ ...marks, [s._id]: e.target.value })
-                  }
-                />
-
-                <button onClick={() => handleGrade(s._id)}>
-                  {s.marks !== null ? "Update Marks" : "Submit Marks"}
-                </button>
+              <div className="evaluation-grid">
+                {SECTIONS.map((sec) => (
+                  <div key={sec.key} className="evaluation-field">
+                    <label>{sec.label}</label>
+                    <input
+                      type="number"
+                      min="0"
+                      max="10"
+                      value={m[sec.key] ?? ""}
+                      onChange={(e) =>
+                        updateMark(s._id, sec.key, e.target.value)
+                      }
+                    />
+                  </div>
+                ))}
               </div>
+
+              <div className="total-row">
+                <span>Total</span>
+                <strong>{total} / 50</strong>
+              </div>
+
+              <button
+                className="submit-eval-btn"
+                onClick={() => handleGrade(s._id)}
+              >
+                Save Evaluation
+              </button>
             </div>
-          ))
-        )}
+          );
+        })}
       </div>
     </div>
   );

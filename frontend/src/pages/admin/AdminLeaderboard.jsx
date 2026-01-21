@@ -75,9 +75,9 @@ const AdminLeaderboard = () => {
             {data.map((d, i) => (
               <tr key={d._id}>
                 <td>{i + 1}</td>
-                <td>{d.teamId.teamId}</td>
-                <td>{d.problemId.title}</td>
-                <td>{d.marks}</td>
+                <td>{d.teamId}</td>
+                <td>{d.problemTitle}</td>
+                <td>{d.totalMarks}</td>
               </tr>
             ))}
           </tbody>

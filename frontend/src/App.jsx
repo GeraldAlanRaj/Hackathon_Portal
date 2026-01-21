@@ -82,13 +82,14 @@ const App = () => {
         />
 
         <Route
-          path="/admin/submissions"
-          element={
-            loggedIn && role === "admin"
-              ? <AdminSubmissions />
-              : <Navigate to="/auth" />
-          }
+            path="/admin/submissions"
+            element={
+              loggedIn && (role === "admin" || role === "evaluator")
+                ? <AdminSubmissions />
+                : <Navigate to="/auth" />
+            }
         />
+
 
         <Route
           path="/admin/hackathon"

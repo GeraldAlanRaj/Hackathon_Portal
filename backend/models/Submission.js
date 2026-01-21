@@ -19,11 +19,6 @@ const SubmissionSchema = new mongoose.Schema(
       required: true
     },
 
-    marks: {
-      type: Number,
-      default: null
-    },
-
     published: {
       type: Boolean,
       default: false
