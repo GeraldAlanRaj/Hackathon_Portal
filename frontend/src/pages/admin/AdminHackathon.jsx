@@ -2,6 +2,16 @@ import { useEffect, useState } from "react";
 import axios from "../../utils/axiosInterceptor";
 import "../../styles/AdminHackathon.css";
 
+/* ================= TIME HELPERS ================= */
+
+// Convert UTC string → datetime-local value
+const toLocalDatetimeInput = (utcString) => {
+  if (!utcString) return "";
+  const d = new Date(utcString);
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().slice(0, 16);
+};
+
 const AdminHackathon = () => {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
@@ -10,19 +20,30 @@ const AdminHackathon = () => {
     fetchWindow();
   }, []);
 
+  /* ================= FETCH ================= */
   const fetchWindow = async () => {
     try {
       const res = await axios.get("/admin/hackathon");
       if (res.data) {
-        setStartTime(res.data.startTime.slice(0, 16));
-        setEndTime(res.data.endTime.slice(0, 16));
+        setStartTime(toLocalDatetimeInput(res.data.startTime));
+        setEndTime(toLocalDatetimeInput(res.data.endTime));
       }
-    } catch {}
+    } catch {
+      alert("Failed to load hackathon window");
+    }
   };
 
+  /* ================= SAVE ================= */
   const saveWindow = async () => {
     try {
-      await axios.post("/admin/hackathon", { startTime, endTime });
+      const startUTC = new Date(startTime).toISOString();
+      const endUTC = new Date(endTime).toISOString();
+
+      await axios.post("/admin/hackathon", {
+        startTime: startUTC,
+        endTime: endUTC
+      });
+
       alert("Hackathon window updated");
     } catch {
       alert("Failed to update window");

@@ -2,6 +2,23 @@ import { useEffect, useState } from "react";
 import axios from "../../utils/axiosInterceptor";
 import "../../styles/Problems.css";
 
+/* ================= TIME HELPERS ================= */
+
+// Format date in IST clearly for users
+const formatIST = (utc) =>
+  new Date(utc).toLocaleString("en-IN", {
+    dateStyle: "medium",
+    timeStyle: "short"
+  });
+
+// Countdown formatter
+const formatTime = (ms) => {
+  const s = Math.floor(ms / 1000);
+  return `${String(Math.floor(s / 3600)).padStart(2, "0")}:${String(
+    Math.floor((s % 3600) / 60)
+  ).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+};
+
 const Problems = () => {
   const [problems, setProblems] = useState([]);
   const [selectedProblem, setSelectedProblem] = useState(null);
@@ -26,12 +43,12 @@ const Problems = () => {
 
   /* ================= TIMER ================= */
   useEffect(() => {
-    if (!timeLeft) return;
+    if (!hackathonStatus) return;
     const timer = setInterval(fetchHackathonWindow, 1000);
     return () => clearInterval(timer);
-  }, [timeLeft]);
+  }, [hackathonStatus]);
 
-  /* ================= CHECK IF ALREADY SUBMITTED ================= */
+  /* ================= CHECK SUBMISSION ================= */
   const checkSubmissionStatus = async () => {
     try {
       const res = await axios.get("/user/my-submission");
@@ -67,9 +84,8 @@ const Problems = () => {
       const start = new Date(res.data.startTime).getTime();
       const end = new Date(res.data.endTime).getTime();
 
-      setHackathonStartTime(
-        new Date(res.data.startTime).toLocaleString()
-      );
+      // Display IST time properly
+      setHackathonStartTime(formatIST(res.data.startTime));
 
       if (now < start) {
         setHackathonStatus("NOT_STARTED");
@@ -88,13 +104,6 @@ const Problems = () => {
     } catch {
       setHackathonStatus("ERROR");
     }
-  };
-
-  const formatTime = (ms) => {
-    const s = Math.floor(ms / 1000);
-    return `${String(Math.floor(s / 3600)).padStart(2, "0")}:${String(
-      Math.floor((s % 3600) / 60)
-    ).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
   };
 
   /* ================= CARD SELECTION ================= */
@@ -130,9 +139,7 @@ const Problems = () => {
         </div>
       )}
 
-      <br />
-
-      {/* TITLE – ONLY DURING HACKATHON & BEFORE SUBMISSION */}
+      {/* TITLE */}
       {!hasSubmitted && hackathonStatus === "RUNNING" && (
         <h1 className="page-title">Problem Statements</h1>
       )}
@@ -145,7 +152,7 @@ const Problems = () => {
             You have successfully submitted for:
             <strong> {submittedProblem}</strong>
           </p>
-          <p>Results can be checked in the leaderboard section!</p>
+          <p>Results will be available after evaluation.</p>
         </div>
       )}
 
@@ -160,7 +167,7 @@ const Problems = () => {
         </div>
       )}
 
-      {/* 🔴 AFTER HACKATHON (NO SUBMISSION) */}
+      {/* 🔴 AFTER HACKATHON */}
       {!hasSubmitted && hackathonStatus === "ENDED" && (
         <div className="locked-card">
           <h3>⛔ Hackathon Completed</h3>
