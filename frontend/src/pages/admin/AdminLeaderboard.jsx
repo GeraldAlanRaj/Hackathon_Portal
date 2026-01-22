@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "../../utils/axiosInterceptor";
-import "../../styles/Leaderboard.css"; // 🔥 REUSE SAME STYLES
+import "../../styles/AdminLeaderboard.css";
+
+const TOTAL_EVALUATORS = 4;
 
 const AdminLeaderboard = () => {
   const [data, setData] = useState([]);
@@ -19,46 +21,35 @@ const AdminLeaderboard = () => {
   };
 
   const publishResults = async () => {
-  if (!window.confirm("Publish leaderboard to all participants?")) return;
+    if (!window.confirm("Publish leaderboard to all participants?")) return;
 
-  try {
-    await axios.post("/admin/leaderboard/publish");
-    alert("Leaderboard published successfully");
-  } catch {
-    alert("Failed to publish leaderboard");
-  }
-};
+    // 🚨 Safety check
+    const incomplete = data.some(
+      (d) => d.evaluatorCount < TOTAL_EVALUATORS
+    );
 
+    if (incomplete) {
+      alert(
+        "Some submissions are not evaluated by all evaluators yet!"
+      );
+      return;
+    }
+
+    try {
+      await axios.post("/admin/leaderboard/publish");
+      alert("Leaderboard published successfully");
+    } catch {
+      alert("Failed to publish leaderboard");
+    }
+  };
 
   return (
     <div className="leaderboard-page">
-
       <h2 className="leaderboard-title">Leaderboard</h2>
-          <button
-      style={{
-        marginBottom: "20px",
-        padding: "10px 18px",
-        background: "linear-gradient(135deg, #ffd700, #ffb703)",
-        border: "none",
-        borderRadius: "8px",
-        fontWeight: "600",
-        cursor: "pointer",
-        transition: "transform 0.25s ease, box-shadow 0.25s ease"
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = "translateY(-2px)";
-        e.currentTarget.style.boxShadow =
-          "0 0 16px rgba(255, 215, 0, 0.8)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = "translateY(0)";
-        e.currentTarget.style.boxShadow = "none";
-      }}
-      onClick={publishResults}
-    >
-      Publish Leaderboard
-    </button>
 
+      <button className="publish-btn" onClick={publishResults}>
+        Publish Leaderboard
+      </button>
 
       <div className="leaderboard-card">
         <table className="leaderboard-table">
@@ -68,16 +59,28 @@ const AdminLeaderboard = () => {
               <th>Team</th>
               <th>Problem</th>
               <th>Marks</th>
+              <th>Evaluations</th>
             </tr>
           </thead>
 
           <tbody>
             {data.map((d, i) => (
-              <tr key={d._id}>
+              <tr key={d.submissionId}>
                 <td>{i + 1}</td>
                 <td>{d.teamId}</td>
                 <td>{d.problemTitle}</td>
                 <td>{d.totalMarks}</td>
+                <td>
+                  <span
+                    className={
+                      d.evaluatorCount === TOTAL_EVALUATORS
+                        ? "eval-complete"
+                        : "eval-pending"
+                    }
+                  >
+                    {d.evaluatorCount} / {TOTAL_EVALUATORS}
+                  </span>
+                </td>
               </tr>
             ))}
           </tbody>

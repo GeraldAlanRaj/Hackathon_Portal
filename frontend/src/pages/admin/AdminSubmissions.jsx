@@ -29,7 +29,7 @@ const AdminSubmissions = () => {
 
       setSubmissions(subRes.data);
 
-      // 🔥 hydrate marks from DB
+      // hydrate marks from DB
       const hydrated = {};
       evalRes.data.forEach((e) => {
         hydrated[e.submissionId] = {
@@ -76,6 +76,7 @@ const AdminSubmissions = () => {
     try {
       await axios.post(`/evaluator/submissions/${submissionId}/evaluate`, data);
       alert("Evaluation saved");
+      loadData(); //  refresh to keep borders correct
     } catch {
       alert("Failed to save evaluation");
     }
@@ -87,85 +88,93 @@ const AdminSubmissions = () => {
       .includes(search.toLowerCase())
   );
 
-return (
-  <div className="admin-submissions-page">
-    {submissions.length === 0 ? (
-      <div className="no-submissions-empty">
-        <h3 className="no-submissions">No submissions yet</h3>
-      </div>
-    ) : (
-      <>
-        <h1 className="page-title">Submissions</h1>
-
-        <div className="search-wrapper">
-          <input
-            placeholder="Search by Team or Problem..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+  return (
+    <div className="admin-submissions-page">
+      {submissions.length === 0 ? (
+        <div className="no-submissions-empty">
+          <h3 className="no-submissions">No submissions yet</h3>
         </div>
+      ) : (
+        <>
+          <h1 className="page-title">Submissions</h1>
 
-        <div className="submissions-grid">
-          {filtered.map((s) => {
-            const m = marks[s._id] || {};
-            const total = SECTIONS.reduce(
-              (sum, sec) => sum + (m[sec.key] || 0),
-              0
-            );
+          <div className="search-wrapper">
+            <input
+              placeholder="Search by Team or Problem..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
 
-            return (
-              <div key={s._id} className="submission-card graded">
-                <div className="submission-header">
-                  <span className="team">{s.teamId.teamId}</span>
-                  <span className="problem">{s.problemId.title}</span>
-                </div>
+          <div className="submissions-grid">
+            {filtered.map((s) => {
+              const m = marks[s._id] || {};
 
-                <a
-                  href={s.solutionLink}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="solution-link"
+              // DETERMINE GRADED STATE (ONLY LOGIC CHANGE)
+              const isGraded = SECTIONS.every(
+                (sec) => typeof m[sec.key] === "number"
+              );
+
+              const total = SECTIONS.reduce(
+                (sum, sec) => sum + (m[sec.key] || 0),
+                0
+              );
+
+              return (
+                <div
+                  key={s._id}
+                  className={`submission-card ${isGraded ? "graded" : ""}`}
                 >
-                  View Solution
-                </a>
+                  <div className="submission-header">
+                    <span className="team">{s.teamId.teamId}</span>
+                    <span className="problem">{s.problemId.title}</span>
+                  </div>
 
-                <div className="evaluation-grid">
-                  {SECTIONS.map((sec) => (
-                    <div key={sec.key} className="evaluation-field">
-                      <label>{sec.label}</label>
-                      <input
-                        type="number"
-                        min="0"
-                        max="10"
-                        value={m[sec.key] ?? ""}
-                        onChange={(e) =>
-                          updateMark(s._id, sec.key, e.target.value)
-                        }
-                      />
-                    </div>
-                  ))}
+                  <a
+                    href={s.solutionLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="solution-link"
+                  >
+                    View Solution
+                  </a>
+
+                  <div className="evaluation-grid">
+                    {SECTIONS.map((sec) => (
+                      <div key={sec.key} className="evaluation-field">
+                        <label>{sec.label}</label>
+                        <input
+                          type="number"
+                          min="0"
+                          max="10"
+                          value={m[sec.key] ?? ""}
+                          onChange={(e) =>
+                            updateMark(s._id, sec.key, e.target.value)
+                          }
+                        />
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="total-row">
+                    <span>Total</span>
+                    <strong>{total} / 50</strong>
+                  </div>
+
+                  <button
+                    className="submit-eval-btn"
+                    onClick={() => handleGrade(s._id)}
+                  >
+                    Save Evaluation
+                  </button>
                 </div>
-
-                <div className="total-row">
-                  <span>Total</span>
-                  <strong>{total} / 50</strong>
-                </div>
-
-                <button
-                  className="submit-eval-btn"
-                  onClick={() => handleGrade(s._id)}
-                >
-                  Save Evaluation
-                </button>
-              </div>
-            );
-          })}
-        </div>
-      </>
-    )}
-  </div>
-);
-
+              );
+            })}
+          </div>
+        </>
+      )}
+    </div>
+  );
 };
 
 export default AdminSubmissions;
