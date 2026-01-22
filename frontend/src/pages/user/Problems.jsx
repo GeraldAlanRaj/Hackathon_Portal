@@ -132,12 +132,15 @@ const Problems = () => {
 
   return (
     <div className="problems-page">
+      <br></br>
       {/* ⏳ TIMER */}
       {hackathonStatus === "RUNNING" && (
         <div className={`problem-timer ${isLastHour ? "danger" : ""}`}>
           ⏳ Time Remaining: <span>{timeLeft}</span>
         </div>
       )}
+
+      <br></br>
 
       {/* TITLE */}
       {!hasSubmitted && hackathonStatus === "RUNNING" && (
