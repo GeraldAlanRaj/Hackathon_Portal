@@ -11,6 +11,9 @@ const Authentication = ({ setLoggedIn, setRole }) => {
   const [teamId, setTeamId] = useState("");
   const [password, setPassword] = useState("");
 
+  // 🔥 NEW STATE
+  const [showPassword, setShowPassword] = useState(false);
+
   const [members, setMembers] = useState([
     { name: "", regNo: "", email: "" },
     { name: "", regNo: "", email: "" },
@@ -91,13 +94,24 @@ const Authentication = ({ setLoggedIn, setRole }) => {
               onChange={(e) => setTeamId(e.target.value)}
               required
             />
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+
+            {/* 🔥 PASSWORD WITH EYE */}
+            <div className="password-wrapper">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <span
+                className="eye-btn"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? "👁️‍🗨️" : "👁️"}
+              </span>
+            </div>
+
             <button type="submit">Log in</button>
           </form>
         )}
@@ -110,13 +124,23 @@ const Authentication = ({ setLoggedIn, setRole }) => {
               onChange={(e) => setTeamId(e.target.value)}
               required
             />
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+
+            {/* 🔥 PASSWORD WITH EYE */}
+            <div className="password-wrapper">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <span
+                className="eye-btn"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? "🙈" : "👁️"}
+              </span>
+            </div>
 
             {members.map((m, i) => (
               <div key={i} className="member-block">
