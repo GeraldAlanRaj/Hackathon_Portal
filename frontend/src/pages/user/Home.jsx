@@ -1,69 +1,17 @@
-import { useEffect, useState } from "react";
 import "../../styles/Home.css";
 
 const Home = () => {
-
-  // ================= COUNTDOWN LOGIC =================
-  const calculateTimeLeft = () => {
-    const targetDate = new Date("2026-01-23T10:00:00");
-    const now = new Date();
-    const difference = targetDate - now;
-
-    if (difference <= 0) return null;
-
-    return {
-      days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-      hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-      minutes: Math.floor((difference / (1000 * 60)) % 60),
-      seconds: Math.floor((difference / 1000) % 60),
-    };
-  };
-
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft());
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
-
   return (
     <div className="home-page">
 
       {/* ================= HERO ================= */}
       <section id="hero" className="hero-section">
 
-        <div></div>
+        <div>
+          
+        </div>
 
         <div className="hero-content">
-
-          {timeLeft && (
-  <div className="hero-countdown-header">
-    <h2 className="countdown-label">Hackathon Starts In</h2>
-    <div className="countdown-timer">
-      <div>
-        <span>{timeLeft.days}</span>
-        <small>Days</small>
-      </div>
-      <div>
-        <span>{timeLeft.hours}</span>
-        <small>Hours</small>
-      </div>
-      <div>
-        <span>{timeLeft.minutes}</span>
-        <small>Minutes</small>
-      </div>
-      <div>
-        <span>{timeLeft.seconds}</span>
-        <small>Seconds</small>
-      </div>
-    </div>
-  </div>
-)}
-
-
           <p className="hero-dept">
             Department of Data Science and Business Systems
           </p>
