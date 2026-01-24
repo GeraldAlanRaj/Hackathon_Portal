@@ -36,10 +36,17 @@ exports.getLeaderboard = async (req, res) => {
       {
         $group: {
           _id: "$submissionId",
-          totalMarks: { $sum: "$total" }
+          totalMarks: { $sum: "$total" },
+          evaluatorCount: { $addToSet: "$evaluatorId" }
+        }
+      },
+      {
+        $addFields: {
+          evaluatorCount: { $size: "$evaluatorCount" }
         }
       },
       { $sort: { totalMarks: -1 } },
+
       {
         $lookup: {
           from: "submissions",
@@ -49,6 +56,7 @@ exports.getLeaderboard = async (req, res) => {
         }
       },
       { $unwind: "$submission" },
+
       {
         $lookup: {
           from: "users",
@@ -58,6 +66,7 @@ exports.getLeaderboard = async (req, res) => {
         }
       },
       { $unwind: "$team" },
+
       {
         $lookup: {
           from: "problemstatements",
@@ -67,10 +76,12 @@ exports.getLeaderboard = async (req, res) => {
         }
       },
       { $unwind: "$problem" },
+
       {
         $project: {
           submissionId: "$_id",
           totalMarks: 1,
+          evaluatorCount: 1,
           teamId: "$team.teamId",
           problemTitle: "$problem.title"
         }
