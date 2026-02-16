@@ -14,6 +14,7 @@ import AdminLeaderboard from "./pages/admin/AdminLeaderboard";
 
 import Navbar from "./components/Navbar";
 import { isAuthenticated, getRole } from "./utils/auth";
+import Mcm_Problems from "./pages/user/Mcm_Problems";
 
 const App = () => {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -52,6 +53,12 @@ const App = () => {
           path="/home"
           element={loggedIn ? <Home /> : <Navigate to="/auth" />}
         />
+
+        <Route
+          path="mcm/problems"
+          element={loggedIn ? <Mcm_Problems /> : <Navigate to="/auth" />}
+        />
+
 
         <Route
           path="/problems"

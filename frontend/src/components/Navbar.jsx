@@ -55,7 +55,7 @@ const Navbar = ({ role, setLoggedIn, setRole }) => {
             >
               Rules & Regulations
             </button>
-
+            <Link to="mcm/problems">MCM</Link>
             <Link to="/problems">Problems</Link>
             <Link to="/leaderboard">Leaderboard</Link>
           </>
@@ -84,7 +84,7 @@ const Navbar = ({ role, setLoggedIn, setRole }) => {
             >
               Rules & Regulations
             </button>
-
+            <Link to="mcm/problems">MCM</Link>
             <Link to="/admin/submissions">Submissions</Link>
             <Link to="/leaderboard">Leaderboard</Link>
           </>

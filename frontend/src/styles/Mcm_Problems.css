@@ -1,0 +1,152 @@
+/* ================= PAGE ================= */
+
+.problems-page {
+  width: 100%;
+  padding: 70px 40px 100px;
+}
+
+/* ================= TITLE ================= */
+
+.page-title {
+  text-align: center;
+  font-size: 30px;
+  margin-bottom: 70px;
+  color: #ffffff;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* ================= GRID ================= */
+
+.problems-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 380px);
+  justify-content: center;
+  gap: 50px;
+  width: 100%;
+}
+
+/* ================= CARD ================= */
+
+.problem-card {
+  width: 380px;
+  min-height: 340px; /* 🔥 Increased height */
+
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 40px 28px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+
+  border: 1px solid rgba(102, 126, 234, 0.35);
+  box-shadow: 0 0 30px rgba(102, 126, 234, 0.25);
+
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.problem-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 0 45px rgba(102, 126, 234, 0.7);
+}
+
+/* ================= TEXT ================= */
+
+.problem-id {
+  font-size: 14px;
+  color: #a8b6ff;
+  margin-bottom: 14px;
+  letter-spacing: 1px;
+}
+
+.problem-title {
+  color: #ffffff;
+  margin-bottom: 28px;
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+/* ================= VIEW BUTTON (UPDATED COLOR) ================= */
+
+/* ================= VIEW BUTTON (BRIGHT WHITE TEXT) ================= */
+
+.primary-btn {
+  padding: 12px 32px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+
+  background: linear-gradient(135deg, #5f6df5, #7a4dff);
+
+  /* 🔥 Force pure bright white */
+  color: #ffffff !important;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+
+  /* Extra clarity */
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+
+  box-shadow: 0 0 25px rgba(122, 77, 255, 0.6);
+  transition: all 0.3s ease;
+
+  margin-bottom: 18px;
+}
+
+.primary-btn:hover {
+  background: linear-gradient(135deg, #4f5ce8, #6a3df0);
+  transform: translateY(-3px);
+  box-shadow: 0 0 35px rgba(122, 77, 255, 0.9);
+}
+
+
+/* ================= SOLUTION LINK ================= */
+
+.solution-link {
+  color: #8fa8ff;
+  text-decoration: none;
+  font-size: 14px;
+  transition: 0.3s ease;
+}
+
+.solution-link:hover {
+  color: #ffffff;
+  text-shadow: 0 0 12px rgba(118, 75, 162, 0.9);
+}
+
+/* ================= NO SOLUTION ================= */
+
+.no-solution {
+  color: #ff4d4d;
+  font-size: 14px;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 1300px) {
+  .problems-grid {
+    grid-template-columns: repeat(2, 360px);
+  }
+
+  .problem-card {
+    width: 360px;
+  }
+}
+
+@media (max-width: 750px) {
+  .problems-grid {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+
+  .problem-card {
+    width: 100%;
+    max-width: 380px;
+  }
+}
